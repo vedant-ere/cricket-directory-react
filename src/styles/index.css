@@ -1,0 +1,6 @@
+/* Purpose: Single stylesheet entrypoint that composes modular CSS files. */
+
+@import './base.css';
+@import './layout.css';
+@import './players.css';
+@import './player-detail.css';
