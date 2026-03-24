@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/sportmonks/:path*",
+      "destination": "https://cricket.sportmonks.com/api/v2.0/:path*"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
