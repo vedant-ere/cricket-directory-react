@@ -21,6 +21,11 @@ const POSITIONS_ENDPOINT = '/positions';
 const LIST_INCLUDES = 'career';
 const DETAIL_INCLUDES = 'country,career,career.season,teams';
 
+let countryMapCache = null;
+let positionMapCache = null;
+let countryMapPromise = null;
+let positionMapPromise = null;
+
 /**
  * Delays execution between retry attempts.
  *
@@ -386,24 +391,11 @@ function extractTeamNames(teamsData) {
 /**
  * Builds a country-id to country-name map used by card and detail views.
  *
- * @param {Array<number | string | null | undefined>} countryIds
  * @param {AbortSignal} [signal]
  * @returns {Promise<Map<number, string>>}
  */
-async function fetchCountryMap(countryIds = [], signal) {
-  const uniqueCountryIds = [
-    ...new Set(
-      countryIds
-        .map((countryId) => Number(countryId))
-        .filter((countryId) => Number.isInteger(countryId) && countryId > 0),
-    ),
-  ];
-
+async function fetchCountryMap(signal) {
   const countryNameById = new Map();
-
-  if (uniqueCountryIds.length === 0) {
-    return countryNameById;
-  }
 
   try {
     const payload = await fetchWithRetry(buildUrl(COUNTRIES_ENDPOINT), { signal });
@@ -456,6 +448,60 @@ async function fetchPositionMap(signal) {
   }
 
   return positionNameById;
+}
+
+/**
+ * Returns a session-cached country map and deduplicates concurrent fetches.
+ *
+ * @param {AbortSignal} [signal]
+ * @returns {Promise<Map<number, string>>}
+ */
+async function getCachedCountryMap(signal) {
+  if (countryMapCache) {
+    return countryMapCache;
+  }
+
+  if (countryMapPromise) {
+    return countryMapPromise;
+  }
+
+  countryMapPromise = fetchCountryMap(signal)
+    .then((map) => {
+      countryMapCache = map;
+      return map;
+    })
+    .finally(() => {
+      countryMapPromise = null;
+    });
+
+  return countryMapPromise;
+}
+
+/**
+ * Returns a session-cached position map and deduplicates concurrent fetches.
+ *
+ * @param {AbortSignal} [signal]
+ * @returns {Promise<Map<number, string>>}
+ */
+async function getCachedPositionMap(signal) {
+  if (positionMapCache) {
+    return positionMapCache;
+  }
+
+  if (positionMapPromise) {
+    return positionMapPromise;
+  }
+
+  positionMapPromise = fetchPositionMap(signal)
+    .then((map) => {
+      positionMapCache = map;
+      return map;
+    })
+    .finally(() => {
+      positionMapPromise = null;
+    });
+
+  return positionMapPromise;
 }
 
 /**
@@ -533,11 +579,9 @@ export async function fetchPlayersDataset(signal) {
       return [];
     }
 
-    const countryIds = playersChunk.map((player) => player?.country_id || player?.country?.id || player?.country?.data?.id);
-
     const [countryById, positionById] = await Promise.all([
-      fetchCountryMap(countryIds, signal),
-      fetchPositionMap(signal),
+      getCachedCountryMap(signal),
+      getCachedPositionMap(signal),
     ]);
 
     const normalizedPlayers = playersChunk
@@ -583,11 +627,9 @@ export async function fetchPlayerById(playerId, signal) {
     throw new Error('Player not found.');
   }
 
-  const countryId = player?.country_id || player?.country?.id || player?.country?.data?.id;
-
   const [countryById, positionById] = await Promise.all([
-    fetchCountryMap([countryId], signal),
-    fetchPositionMap(signal),
+    getCachedCountryMap(signal),
+    getCachedPositionMap(signal),
   ]);
 
   return normalizePlayer(player, { countryById, positionById });
