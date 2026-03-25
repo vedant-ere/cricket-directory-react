@@ -6,7 +6,8 @@ import { readPlayersDatasetCache, writePlayersDatasetCache } from './playerCache
  */
 
 const API_KEY = import.meta.env.VITE_SPORTMONKS_API_KEY;
-const BASE_URL = import.meta.env.VITE_SPORTMONKS_API_BASE_URL || '/api/sportmonks';
+const RAW_BASE_URL = import.meta.env.VITE_SPORTMONKS_API_BASE_URL || '/api/sportmonks';
+const BASE_URL = RAW_BASE_URL.includes('cricket.sportmonks.com') ? '/api/sportmonks' : RAW_BASE_URL;
 
 const REQUEST_TIMEOUT_MS = 120000;
 const RETRY_ATTEMPTS = 2;
