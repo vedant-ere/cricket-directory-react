@@ -13,6 +13,39 @@
   --accent-strong: #16a34a;
   --danger: #f87171;
   --shadow: 0 10px 24px rgba(0, 0, 0, 0.3);
+  --text-placeholder: #7c8ea4;
+  --accent-ink: #052e16;
+  --button-secondary-bg: #1f2d3d;
+  --button-secondary-text: #d2dce8;
+  --button-secondary-border: #32455c;
+  --button-secondary-bg-hover: #25384c;
+  --button-secondary-border-hover: #3a526f;
+  --label-text: #b8c4d3;
+  --error-text: #fecaca;
+  --error-border: #7f1d1d;
+  --error-bg: #2b1114;
+  --topbar-border: #1e293b;
+  --topbar-text: #dbe4ee;
+  --nav-text: #a8b5c5;
+  --nav-active-text: #ebfff2;
+  --link-accent: #7ee2a8;
+  --meta-label: #90a2b8;
+  --meta-strong: #f3f6fa;
+  --media-bg: #152232;
+  --panel-bg: #132030;
+  --meta-muted: #8ea1b8;
+  --meta-text: #e5eaf0;
+  --skeleton-base: #111b27;
+  --skeleton-highlight: #1a2737;
+  --pagination-active-bg: #e5e7eb;
+  --pagination-active-text: #0f172a;
+  --detail-inline-text: #d8e2ed;
+  --role-text: #9befbd;
+  --detail-facts-text: #c3cfdd;
+  --stat-label: #9badc1;
+  --stat-strong: #f1f5f9;
+  --chip-border: #36506a;
+  --chip-text: #dce5ef;
 }
 
 * {
@@ -52,7 +85,7 @@ select {
 }
 
 input::placeholder {
-  color: #7c8ea4;
+  color: var(--text-placeholder);
 }
 
 input:focus,
@@ -65,7 +98,7 @@ button:focus {
 button {
   border: 1px solid var(--accent-strong);
   background: var(--accent-strong);
-  color: #052e16;
+  color: var(--accent-ink);
   border-radius: 10px;
   padding: 10px 14px;
   cursor: pointer;
@@ -83,14 +116,14 @@ button:disabled {
 }
 
 .secondary-button {
-  background: #1f2d3d;
-  color: #d2dce8;
-  border-color: #32455c;
+  background: var(--button-secondary-bg);
+  color: var(--button-secondary-text);
+  border-color: var(--button-secondary-border);
 }
 
 .secondary-button:hover {
-  background: #25384c;
-  border-color: #3a526f;
+  background: var(--button-secondary-bg-hover);
+  border-color: var(--button-secondary-border-hover);
 }
 
 label {
@@ -98,7 +131,7 @@ label {
   gap: 6px;
   font-weight: 600;
   font-size: 0.87rem;
-  color: #b8c4d3;
+  color: var(--label-text);
 }
 
 .state-text {
@@ -109,7 +142,7 @@ label {
 }
 
 .state-text.error {
-  color: #fecaca;
-  border-color: #7f1d1d;
-  background: #2b1114;
+  color: var(--error-text);
+  border-color: var(--error-border);
+  background: var(--error-bg);
 }

@@ -2,7 +2,7 @@
 
 .cb-topbar {
   background: rgba(11, 18, 28, 0.95);
-  border-bottom: 1px solid #1e293b;
+  border-bottom: 1px solid var(--topbar-border);
   backdrop-filter: blur(6px);
   position: sticky;
   top: 0;
@@ -22,7 +22,7 @@
 .cb-label {
   font-size: 0.95rem;
   letter-spacing: 0.4px;
-  color: #dbe4ee;
+  color: var(--topbar-text);
   font-weight: 600;
 }
 
@@ -33,7 +33,7 @@
 }
 
 .cb-nav a {
-  color: #a8b5c5;
+  color: var(--nav-text);
   text-decoration: none;
   font-size: 0.88rem;
   padding: 7px 12px;
@@ -42,7 +42,7 @@
 }
 
 .cb-nav a.active {
-  color: #ebfff2;
+  color: var(--nav-active-text);
   border-color: rgba(34, 197, 94, 0.35);
   background: rgba(34, 197, 94, 0.14);
 }
@@ -71,7 +71,7 @@
 
 .back-link {
   display: inline-block;
-  color: #7ee2a8;
+  color: var(--link-accent);
   text-decoration: none;
   font-weight: 600;
 }
