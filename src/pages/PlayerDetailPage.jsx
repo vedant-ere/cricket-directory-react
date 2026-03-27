@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import AppHeader from '../components/AppHeader';
 import { fetchPlayerById } from '../services/api';
@@ -76,7 +76,7 @@ function PlayerDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  const imageSource = useMemo(() => player?.imageUrl || playerPlaceholderImage, [player?.imageUrl]);
+  const imageSource = player?.imageUrl || playerPlaceholderImage;
 
   useEffect(() => {
     const controller = new AbortController();
