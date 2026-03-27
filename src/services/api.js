@@ -108,7 +108,14 @@ async function fetchWithRetry(url, options = {}, attempts = RETRY_ATTEMPTS) {
         throw httpError;
       }
 
-      return response.json();
+      try {
+        return await response.json();
+      } catch (parseError) {
+        // Malformed JSON should be treated like a transient failure to allow retries.
+        const error = new Error('API returned malformed JSON.');
+        error.cause = parseError;
+        throw error;
+      }
     } catch (error) {
       timeoutController.clear();
 
@@ -338,6 +345,8 @@ function extractCareerStats(careerData) {
         runs: null,
         wickets: null,
         average: null,
+        averageTotal: 0,
+        averageCount: 0,
       });
     }
 
@@ -355,14 +364,28 @@ function extractCareerStats(careerData) {
       currentStats.wickets = (currentStats.wickets || 0) + wickets;
     }
 
-    if (currentStats.average === null && average !== null) {
-      currentStats.average = average;
+    if (average !== null) {
+      currentStats.averageTotal += average;
+      currentStats.averageCount += 1;
     }
   });
 
   const preferredOrder = ['ODI', 'T20', 'Test'];
 
-  return [...groupedStats.values()].sort((first, second) => {
+  const finalizedStats = [...groupedStats.values()].map((stat) => {
+    if (stat.matches !== null && stat.matches > 0 && stat.runs !== null) {
+      stat.average = stat.runs / stat.matches;
+    } else if (stat.averageCount > 0) {
+      stat.average = stat.averageTotal / stat.averageCount;
+    }
+
+    delete stat.averageTotal;
+    delete stat.averageCount;
+
+    return stat;
+  });
+
+  return finalizedStats.sort((first, second) => {
     const firstOrder = preferredOrder.indexOf(first.type);
     const secondOrder = preferredOrder.indexOf(second.type);
     const safeFirstOrder = firstOrder === -1 ? Number.MAX_SAFE_INTEGER : firstOrder;
