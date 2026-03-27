@@ -131,10 +131,6 @@ VITE_SPORTMONKS_API_BASE_URL=/api/sportmonks
 
 Optional:
 
-```env
-VITE_MAX_PLAYERS_PAGES=30
-```
-
 Notes:
 
 - Do not commit `.env`.
